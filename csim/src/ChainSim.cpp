@@ -38,6 +38,7 @@
 	double time;
 	double duration = 0.0;
 	std::vector<double> dur_vec;
+	Rcpp::IntegerVector trows;
 
 // declare working variables for interval sums loop
 	int interval;
@@ -45,11 +46,6 @@
 	double end_time;
 	double accum_duration;
 	double eval_time;
-
-
-
-
-
 
 // Now for the development of history as matched vectors, the hvectors will grow by push_backs
 int sim=0;
@@ -64,7 +60,15 @@ while(sim < cycles) {
 		actual_state = istates.at(state_index)+1;
 		Rcout<<" actual initial state: "<< actual_state << "\n";
 		time = 0.0;
+		hstate.push_back(actual_state);
+		htime.push_back(time);
 		while(time < mission) {
+			Rcout<< "from" << from<< "\n";
+			Rcout<<hstate.back()<<"\n";
+//Rcout<<" end_time: "<< end_time<< "\n";			
+			//trows = which(from, hstate.back());
+			
+// need to investigate problems with from vector			
 		
 		
 		
@@ -72,7 +76,8 @@ while(sim < cycles) {
 
 
 
-
+// temperary end to loop
+time = mission;
 
 		} // end of single history loop
 		
@@ -110,11 +115,11 @@ Rcpp::IntegerVector test_which=which(states, 2);
 Rcout<< "size of test_which: "<< test_which.size()<< "\n";
 	
 // unused variables
-//Rcout<<" end_time: "<< end_time<< "\n";
+
 Rcout<<"accum_duration: "<< accum_duration<< "\n";
 // Rcout<<" nstates : "<< nstates << "\n";
 Rcout<<" duration: "<< duration<< "\n";
 
 
-return wrap(istates);
+return wrap(trows);
  }
