@@ -22,12 +22,12 @@
 	int nstates =  states.size();		
 	double stepsize = (double) mission/intervals;		
 // a lot of trouble replacing which()			
-	Rcpp::IntegerVector  istates;		
-	for(int index = 0; index < nstates; index++) {		
-	    if(states.at(index) == 1) {		
-	       istates.push_back(index);		
-	    }		
-	}		
+	Rcpp::IntegerVector  istates= which(states, 1);		
+//	for(int index = 0; index < nstates; index++) {		
+//	    if(states.at(index) == 1) {		
+//	       istates.push_back(index);		
+//	    }		
+//	}		
 
 
 
