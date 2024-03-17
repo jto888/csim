@@ -8,6 +8,7 @@
 
 RcppExport SEXP ChainSim( SEXP, SEXP, SEXP, SEXP);
 
+Rcpp::IntegerVector which(Rcpp::IntegerVector vecDup, int elem);
 		
 #endif
 
