@@ -21,17 +21,44 @@
 // derivations from key input			
 	int nstates =  states.size();		
 	double stepsize = (double) mission/intervals;		
-// a lot of trouble replacing which()			
+// remember istates are indices	into states, so the state numbers are istates + 1
 	Rcpp::IntegerVector  istates= which(states, 1);		
-//	for(int index = 0; index < nstates; index++) {		
-//	    if(states.at(index) == 1) {		
-//	       istates.push_back(index);		
-//	    }		
-//	}		
+
+// declare the outmat object, should be an arma::mat to facilitate placement
+// of real values in known dimensions intervals by states
+
+// declare the three history vectors htime, hduration, hstate
+
+
+// declare the working variables int actual_state, double time, double duration, vector<double> dur_vec
+
+
+// Now for the development of history as matched vectors, expect to need a position variable
+int sim=0;
+while(sim < cycles) {
+	int state_index=0;
+	while(state_index < istates.size()) {
+		Rcout<<" actual initial state: "<< istates.at(state_index)+1<< "\n";
+		
 
 
 
 
+
+
+
+	state_index++;
+	}
+
+sim++;
+}
+	
+// unused variables
+Rcout<<" mission: "<< mission<< "\n";
+Rcout<<"intervals: "<< intervals<< "\n";
+Rcout<<" cycles: "<< cycles<< "\n";
+Rcout<<" nstates : "<< nstates << "\n";
+Rcout<<" stepsize: "<< stepsize<< "\n";
 
 
 return wrap(istates);
