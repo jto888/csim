@@ -26,7 +26,7 @@
 
 // declare the outmat object, should be an arma::mat to facilitate placement
 // of real values in known dimensions intervals by states
-
+	arma::Mat<double>  outmat(intervals, nstates);
 
 // declare the three history vectors: htime, hduration, hstate
 	std::vector<double> htime;
@@ -112,7 +112,7 @@ Rcout<< "size of test_which: "<< test_which.size()<< "\n";
 // unused variables
 //Rcout<<" end_time: "<< end_time<< "\n";
 Rcout<<"accum_duration: "<< accum_duration<< "\n";
-Rcout<<" nstates : "<< nstates << "\n";
+// Rcout<<" nstates : "<< nstates << "\n";
 Rcout<<" duration: "<< duration<< "\n";
 
 
