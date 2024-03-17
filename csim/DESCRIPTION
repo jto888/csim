@@ -1,0 +1,12 @@
+Package: csim
+Title: StochasticChain Solution
+Version: 0.1
+Date: 2024-3-17
+Author: David J. Silkworth
+Maintainer: Jacob T. Ormerod <jake@openreliability.org>
+Description:  Rcpp development for internal code
+License: GPL (>= 3)
+LazyLoad: yes
+SystemRequirements: C++11
+Imports: Rcpp (>= 0.12.4)
+LinkingTo: Rcpp, RcppArmadillo
