@@ -27,18 +27,46 @@
 // declare the outmat object, should be an arma::mat to facilitate placement
 // of real values in known dimensions intervals by states
 
-// declare the three history vectors htime, hduration, hstate
+
+// declare the three history vectors: htime, hduration, hstate
+	std::vector<double> htime;
+	std::vector<double> hduration;
+	std::vector<int> hstate;
+
+// declare the working variables for history loop
+	int actual_state;
+	double time;
+	double duration = 0.0;
+	std::vector<double> dur_vec;
+
+// declare working variables for interval sums loop
+	int interval;
+	double start_time;
+	double end_time;
+	double accum_duration;
+	double eval_time;
 
 
-// declare the working variables int actual_state, double time, double duration, vector<double> dur_vec
 
 
-// Now for the development of history as matched vectors, expect to need a position variable
+
+
+// Now for the development of history as matched vectors, the hvectors will grow by push_backs
 int sim=0;
 while(sim < cycles) {
 	int state_index=0;
 	while(state_index < istates.size()) {
-		Rcout<<" actual initial state: "<< istates.at(state_index)+1<< "\n";
+	// prepare to enter the history loop
+		time=0.0;
+		htime.clear();
+		hduration.clear();
+		hstate.clear();
+		actual_state = istates.at(state_index)+1;
+		Rcout<<" actual initial state: "<< actual_state << "\n";
+		time = 0.0;
+		while(time < mission) {
+		
+		
 		
 
 
@@ -46,19 +74,46 @@ while(sim < cycles) {
 
 
 
+		} // end of single history loop
+		
+	// now prepare to enter the period sums loop
+		start_time = 0.0;
+		interval = 0;
+		while(interval < intervals) {
+	// update end_time for this interval
+			end_time = start_time+stepsize;
+			accum_duration = 0.0;
+			eval_time = start_time;
+			while(eval_time < end_time) {
+// trap an occasional error that occurs when mod_history is empty but for some reason eval_time is not exactly equal to end_time
+if(htime.size() == 0) break;
 
+
+	
+	
+	
+	//To pop the first element of an std::vector (lets call it myvector), you just have to write:
+	//myvector.erase(myvector.begin()); // pop front	
+	
+	
+			}
+		interval++;
+		}
 	state_index++;
 	}
 
 sim++;
 }
+
+// test what happens when which comes back empty
+Rcpp::IntegerVector test_which=which(states, 2);
+Rcout<< "size of test_which: "<< test_which.size()<< "\n";
 	
 // unused variables
-Rcout<<" mission: "<< mission<< "\n";
-Rcout<<"intervals: "<< intervals<< "\n";
-Rcout<<" cycles: "<< cycles<< "\n";
+//Rcout<<" end_time: "<< end_time<< "\n";
+Rcout<<"accum_duration: "<< accum_duration<< "\n";
 Rcout<<" nstates : "<< nstates << "\n";
-Rcout<<" stepsize: "<< stepsize<< "\n";
+Rcout<<" duration: "<< duration<< "\n";
 
 
 return wrap(istates);
