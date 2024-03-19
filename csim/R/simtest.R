@@ -6,7 +6,7 @@ simtest<-function() {
 #simcontrol<-list(mission=10000,	intervals=50, cycles=1)
 
 # Pa2Diff
-istates<-c(1,0,0,0)
+states<-c(1,0,0,0)
 tt_int<-c(1,2,1,3,2,4,3,4)
 tt_float<-c(.02,.01,.01,.02)
 simcontrol<-list(mission=200,intervals=100, cycles=1)
