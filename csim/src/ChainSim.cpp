@@ -63,12 +63,11 @@ while(sim < cycles) {
 		hstate.push_back(actual_state);
 		htime.push_back(time);
 		while(time < mission) {
-			Rcout<< "from" << from<< "\n";
-			Rcout<<hstate.back()<<"\n";
-//Rcout<<" end_time: "<< end_time<< "\n";			
-			//trows = which(from, hstate.back());
+Rcout<<" from: "<< from<< "\n";
+Rcout<<" hstate.back(): "<< hstate.back()<< "\n";			
+			trows = which(from, hstate.back());
 			
-// need to investigate problems with from vector			
+		
 		
 		
 		
