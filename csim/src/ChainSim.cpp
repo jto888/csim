@@ -27,6 +27,8 @@
 // declare the outmat object, should be an arma::mat to facilitate placement
 // of real values in known dimensions intervals by states
 	arma::Mat<double>  outmat(intervals, nstates);
+	
+// store the RNGscope here, now that outmat has been declared	
 
 // declare the three history vectors: htime, hduration, hstate
 	std::vector<double> htime;
@@ -36,7 +38,7 @@
 // declare the working variables for history loop
 	int actual_state;
 	double time;
-	double duration = 0.0;
+	double duration;
 	std::vector<double> dur_vec;
 	Rcpp::IntegerVector trows;
 	int min_index;
@@ -60,13 +62,16 @@ while(sim < cycles) {
 		hduration.clear();
 		hstate.clear();
 		actual_state = istates.at(state_index)+1;
-		Rcout<<" actual initial state: "<< actual_state << "\n";
+//Rcout<<" actual initial state: "<< actual_state << "\n";
 		time = 0.0;
 		hstate.push_back(actual_state);
 		htime.push_back(time);
+//Rcout<<" time: "<< time<< "\n";
+//Rcout<<" htime.back() "<< htime.back()<< "\n";
+		
 		while(time < mission) {
-Rcout<<" from: "<< from<< "\n";
-Rcout<<" hstate.back(): "<< hstate.back()<< "\n";			
+//Rcout<<" from: "<< from<< "\n";
+//Rcout<<" hstate.back(): "<< hstate.back()<< "\n";			
 			trows = which(from, hstate.back());
 			if(trows.size() > 0) {
 				dur_vec.clear();
@@ -76,28 +81,36 @@ Rcout<<" hstate.back(): "<< hstate.back()<< "\n";
 					}
 				}
 				min_index = std::distance(std::begin(dur_vec), std::min_element(std::begin(dur_vec), std::end(dur_vec)));
-Rcout<<" min dur: "<< dur_vec[std::distance(std::begin(dur_vec), std::min_element(std::begin(dur_vec), std::end(dur_vec)))]<< "\n";	
+//Rcout<<" min dur: "<< dur_vec[std::distance(std::begin(dur_vec), std::min_element(std::begin(dur_vec), std::end(dur_vec)))]<< "\n";	
 				if(dur_vec.size() > 1) {
-					hduration.push_back(dur_vec[min_index]);
+					duration = dur_vec[min_index];
+					hduration.push_back(duration);
 				}else{
+					duration = dur_vec[0];
 					hduration.push_back(dur_vec[0]);
 				}
-Rcout<<" next_actual_state: "<< to[trows[min_index]] << "\n";	
+//Rcout<<" next_actual_state: "<< to[trows[min_index]] << "\n";	
 				next_actual_state = to[trows[min_index]];
-				
+			// ready to update the hvectors
+				time = time + duration;
+//Rcout<<" time: "<< time<< "\n";
+//Rcout<<" duration: "<< duration<< "\n";			
+				if(time>mission) {	
+			// this event ran beyond the end of the  mission, so just need to fill last duration		
+				time = mission;	
+				hduration.push_back(mission - htime.back() );	
+				}else{	
+			// record nextstate and (start) time of next event (we don't know duration yet)		
+				hstate.push_back(next_actual_state);	
+				htime.push_back(time);
+//Rcout<<" time: "<< time<< "\n";				
+//Rcout<<" htime.back() "<< htime.back()<< "\n";				
+				}	
+			}else{		
+			// there was no other state to go to, so just need to fill last duration		
+			time = mission;		
+			hduration.push_back(mission - htime.back() );		
 			}
-			
-// ready to update the hvectors
-		
-		
-		
-		
-
-
-
-
-// temperary end to loop
-time = mission;
 
 		} // end of single history loop
 		
@@ -130,16 +143,20 @@ if(htime.size() == 0) break;
 sim++;
 }
 
-// test what happens when which comes back empty
-Rcpp::IntegerVector test_which=which(states, 2);
-Rcout<< "size of test_which: "<< test_which.size()<< "\n";
+ //Rcout<<" hstate.size() : "<< hstate.size() << "\n";
+ //Rcout<<" hduration.size() : "<< hduration.size() << "\n";
+ //Rcout<<" htime.size() : "<< htime.size() << "\n";
+ 
+ 
+ Rcpp::DataFrame df = Rcpp::DataFrame::create(
+						Named("Time") = htime,
+						Named("State") = hstate,
+						Named("Duration") = hduration
+						);
 	
 // unused variables
-
 Rcout<<"accum_duration: "<< accum_duration<< "\n";
-// Rcout<<" nstates : "<< nstates << "\n";
-Rcout<<" duration: "<< duration<< "\n";
 
 
-return wrap(dur_vec);
+return wrap(df);
  }

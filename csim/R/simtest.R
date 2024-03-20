@@ -11,11 +11,16 @@ tt_int<-c(1,2,1,3,2,4,3,4)
 tt_float<-c(.02,.01,.01,.02)
 simcontrol<-list(mission=200,intervals=100, cycles=1)
 
-
-	
+## this attempt to loop the .Call crashes R - memory leak?
+##outmat<-NULL
+##for(cy in 1:10) {
 		
- ## this is the old call to the unregistered C++ code in the csim library	
-out<-.Call("ChainSim", states, tt_int, tt_float, simcontrol, PACKAGE="csim")	
+	 ## this is the old call to the unregistered C++ code in the csim library	
+	out<-.Call("ChainSim", states, tt_int, tt_float, simcontrol, PACKAGE="csim")	
 
+##	outmat<-outmat + out
+##}
+
+##outmat
 out
 }
