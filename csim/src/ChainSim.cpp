@@ -39,6 +39,8 @@
 	double duration = 0.0;
 	std::vector<double> dur_vec;
 	Rcpp::IntegerVector trows;
+	int min_index;
+	int next_actual_state;
 
 // declare working variables for interval sums loop
 	int interval;
@@ -66,7 +68,26 @@ while(sim < cycles) {
 Rcout<<" from: "<< from<< "\n";
 Rcout<<" hstate.back(): "<< hstate.back()<< "\n";			
 			trows = which(from, hstate.back());
+			if(trows.size() > 0) {
+				dur_vec.clear();
+				for(int row=0; row < trows.size(); row++) {
+					if(rates[trows[row]] > 0) {
+						dur_vec.push_back(Rcpp::rexp(1,rates[trows[row]])[0]);
+					}
+				}
+				min_index = std::distance(std::begin(dur_vec), std::min_element(std::begin(dur_vec), std::end(dur_vec)));
+Rcout<<" min dur: "<< dur_vec[std::distance(std::begin(dur_vec), std::min_element(std::begin(dur_vec), std::end(dur_vec)))]<< "\n";	
+				if(dur_vec.size() > 1) {
+					hduration.push_back(dur_vec[min_index]);
+				}else{
+					hduration.push_back(dur_vec[0]);
+				}
+Rcout<<" next_actual_state: "<< to[trows[min_index]] << "\n";	
+				next_actual_state = to[trows[min_index]];
+				
+			}
 			
+// ready to update the hvectors
 		
 		
 		
@@ -120,5 +141,5 @@ Rcout<<"accum_duration: "<< accum_duration<< "\n";
 Rcout<<" duration: "<< duration<< "\n";
 
 
-return wrap(trows);
+return wrap(dur_vec);
  }
