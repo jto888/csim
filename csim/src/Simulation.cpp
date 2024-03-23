@@ -42,8 +42,8 @@ while(sim < cycles) {
 		time = 0.0;
 		hstate.push_back(actual_state);
 		htime.push_back(time);
-//Rcout<<" time: "<< time<< "\n";
-//Rcout<<" htime.back() "<< htime.back()<< "\n";
+//Rcout<<" htime: "<< Rcpp::wrap(htime)<< "\n";
+//Rcout<<" hstate:  "<< Rcpp::wrap(hstate)<< "\n";
 		
 		while(time < mission) {
 //Rcout<<" from: "<< from<< "\n";
@@ -65,16 +65,18 @@ while(sim < cycles) {
 					duration = dur_vec[0];
 					hduration.push_back(dur_vec[0]);
 				}
-//Rcout<<" next_actual_state: "<< to[trows[min_index]] << "\n";	
+//Rcout<<" hduration:  "<< Rcpp::wrap(hduration)<< "\n";
+Rcout<<" next_actual_state: "<< to[trows[min_index]] << "\n";	
 				next_actual_state = to[trows[min_index]];
 			// ready to update the hvectors
-				time = time + duration;
-//Rcout<<" time: "<< time<< "\n";
-//Rcout<<" duration: "<< duration<< "\n";			
+				time = htime[(int) htime.size()-1] + duration;
+Rcout<<"  (next) time: "<<time<< "\n";
+Rcout<<" duration: "<< duration<< "\n";			
 				if(time>mission) {	
 			// this event ran beyond the end of the  mission, so just need to fill last duration		
-				time = mission;	
-				hduration.push_back(mission - htime.back() );	
+				time = mission;
+				duration = time -  htime[(int) htime.size()-1] ;
+				hduration.push_back(duration);	
 				}else{	
 			// record nextstate and (start) time of next event (we don't know duration yet)		
 				hstate.push_back(next_actual_state);	
@@ -84,10 +86,13 @@ while(sim < cycles) {
 				}	
 			}else{		
 			// there was no other state to go to, so just need to fill last duration		
-			time = mission;		
-			hduration.push_back(mission - htime.back() );		
+			time = mission;	
+			duration = time - htime[(int) htime.size()-1];
+			hduration.push_back(duration);		
 			}
-
+//Rcout<<" hstate:  "<< Rcpp::wrap(hstate)<< "\n";
+//Rcout<<" hduration:  "<< Rcpp::wrap(hduration)<< "\n";
+//Rcout<<" htime: "<< Rcpp::wrap(htime)<< "\n";			
 		} // end of single history loop
 		
 	// now prepare to enter the period sums loop
