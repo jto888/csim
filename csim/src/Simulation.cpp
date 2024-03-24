@@ -26,7 +26,8 @@ Simulation::Simulation(SEXP states_in, SEXP tt_int, SEXP tt_float, SEXP control_
 	stepsize = (double) mission/intervals;		
 // remember istates are indices	into states, so the state numbers are istates + 1
 	istates = which(states, 1);  
-	
+	outmat.set_size(intervals, nstates);
+	outmat.zeros();		
 	// Now for the development of history as matched vectors, the hvectors will grow by push_backs
 int sim=0;
 while(sim < cycles) {
@@ -90,12 +91,22 @@ Rcout<<" duration: "<< duration<< "\n";
 			duration = time - htime[(int) htime.size()-1];
 			hduration.push_back(duration);		
 			}
-//Rcout<<" hstate:  "<< Rcpp::wrap(hstate)<< "\n";
-//Rcout<<" hduration:  "<< Rcpp::wrap(hduration)<< "\n";
-//Rcout<<" htime: "<< Rcpp::wrap(htime)<< "\n";			
-		} // end of single history loop
 		
-	// now prepare to enter the period sums loop
+		} // end of single history loop
+// preserve this history and work with mod_hvectors for interval sums
+mod_htime.clear();
+mod_hstate.clear();
+mod_hduration.clear();
+		for(int x=0; x<(int) htime.size(); x++) {	
+			mod_htime.push_back(htime[x]);
+			long_htime.push_back(htime[x]);
+			mod_hstate.push_back(hstate[x]);
+			long_hstate.push_back(hstate[x]);
+			mod_hduration.push_back(hduration[x]);
+			long_hduration.push_back(hduration[x]);
+		}
+		
+	// now prepare to enter the interval sums loop
 		start_time = 0.0;
 		interval = 0;
 		while(interval < intervals) {
@@ -105,15 +116,35 @@ Rcout<<" duration: "<< duration<< "\n";
 			eval_time = start_time;
 			while(eval_time < end_time) {
 // trap an occasional error that occurs when mod_history is empty but for some reason eval_time is not exactly equal to end_time
-if(htime.size() == 0) break;
+if(mod_htime.size() == 0) break;
+//if(htime.size() == 0) break;
 
+				// working with the current [0] elements of mod_hxxx vectors, which will be erased as we proceed							
+				if((mod_hduration[0]+accum_duration) > stepsize) {							
+				// prepare to update the outmat at (interval, this_state) with duration, which is stepsize-accum_duration							
+					this_state = mod_hstate[0];						
+					outmat(interval, (this_state-1)) = outmat(interval, (this_state-1)) + (stepsize-accum_duration); 						
+				// modify mod_hduration[0] to reflect remaining duration to carry over to next interval							
+					mod_hduration[0] = mod_hduration[0] - (stepsize - accum_duration);						
+					mod_htime[0] = end_time;						
+				// adjust start_time for next interval, this will terminate the while loop for this interval							
+					eval_time = end_time; 						
+					start_time = end_time;						
+				}else{							
+				// add this duration to outmat for this state							
+					this_state = mod_hstate[0];						
+					outmat(interval, (this_state-1)) = outmat(interval, (this_state-1)) + mod_hduration[0];					
+				// update accum_duration							
+					accum_duration = accum_duration+mod_hduration[0];						
+				// erase front elements (.begin) from all mod_hxxx vectors
+					eval_time = mod_htime[0] + accum_duration;
+					mod_htime.erase(mod_htime.begin());						
+					mod_hstate.erase(mod_hstate.begin());						
+					mod_hduration.erase(mod_hduration.begin());	
+				}
 
-	
-	
-	
 	//To pop the first element of an std::vector (lets call it myvector), you just have to write:
 	//myvector.erase(myvector.begin()); // pop front	
-	
 	
 			}
 		interval++;
@@ -124,16 +155,12 @@ if(htime.size() == 0) break;
 sim++;
 }
 
- //Rcout<<" hstate.size() : "<< hstate.size() << "\n";
- //Rcout<<" hduration.size() : "<< hduration.size() << "\n";
- //Rcout<<" htime.size() : "<< htime.size() << "\n";
- 
  
  df = Rcpp::DataFrame::create(
-						Rcpp::Named("Time") = htime,
-						Rcpp::Named("State") = hstate,
-						Rcpp::Named("Duration") = hduration
-						);
+		Rcpp::Named("State") = long_hstate,
+		Rcpp::Named("Duration") = long_hduration,
+		Rcpp::Named("Time") = long_htime
+		);
 	
 // unused variables
 Rcout<<"accum_duration: "<< accum_duration<< "\n";

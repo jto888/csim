@@ -47,6 +47,9 @@ class Simulation {
 	std::vector<double> mod_htime;
 	std::vector<double> mod_hduration;
 	std::vector<int> mod_hstate;
+	std::vector<double> long_htime;
+	std::vector<double> long_hduration;
+	std::vector<int> long_hstate;	
 	//Rcpp::DataFrame df;
 	
 	public:	
@@ -55,7 +58,8 @@ class Simulation {
 // return objects	
 	Rcpp::DataFrame df;	
 // declare the outmat object
-	arma::Mat<double>  outmat;		
+	arma::Mat<double>  outmat;
+	Rcpp::List histories;		
 
 };
 #endif	
