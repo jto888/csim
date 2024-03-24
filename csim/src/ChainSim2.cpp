@@ -19,7 +19,7 @@
 	outlist.push_back(Rcpp::wrap(H->get__detail()));
 */
 outlist.push_back(SIM->df);
-
+outlist.push_back(Rcpp::wrap(SIM->outmat));
 	 return(outlist);
 
 }

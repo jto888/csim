@@ -130,7 +130,6 @@ sim++;
 						Rcpp::Named("Duration") = hduration
 						);
 	
-// unused variables
-Rcout<<"accum_duration: "<< accum_duration<< "\n";
+
 
 }

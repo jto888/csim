@@ -51,6 +51,7 @@ class Simulation {
 // Constructor	
 	Simulation(SEXP states_in, SEXP tt_int, SEXP tt_float, SEXP control_in);	
 	Rcpp::DataFrame df;	
+	Rcpp::DataFrame outDF;
 	
 
 };
