@@ -162,6 +162,7 @@ sim++;
 		Rcpp::Named("Time") = long_htime
 		);
 	
-
+// unused variables
+Rcout<<"accum_duration: "<< accum_duration<< "\n";
 
 }

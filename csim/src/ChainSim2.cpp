@@ -22,10 +22,7 @@
 
 outlist.push_back(SIM->df);
 outlist.push_back(Rcpp::wrap(SIM->outmat));
-<<<<<<< HEAD
-=======
 
->>>>>>> 10c6dc487ee5bfcaab647876070aadb5fe2b6b69
 	 return(outlist);
 
 }

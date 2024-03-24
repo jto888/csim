@@ -57,14 +57,9 @@ class Simulation {
 	Simulation(SEXP states_in, SEXP tt_int, SEXP tt_float, SEXP control_in);
 // return objects	
 	Rcpp::DataFrame df;	
-<<<<<<< HEAD
-	Rcpp::DataFrame outDF;
-	
-=======
 // declare the outmat object
 	arma::Mat<double>  outmat;
 	Rcpp::List histories;		
->>>>>>> 10c6dc487ee5bfcaab647876070aadb5fe2b6b69
 
 };
 #endif	
