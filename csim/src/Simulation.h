@@ -23,9 +23,7 @@ class Simulation {
 	int nstates;
 	double stepsize;
 	Rcpp::IntegerVector istates;
-// declare the outmat object, should be an arma::mat to facilitate placement
-// of real values in known dimensions intervals by states
-	arma::Mat<double>  outmat;	
+
 	
 // declare the three history vectors: htime, hduration, hstate
 	std::vector<double> htime;
@@ -45,14 +43,28 @@ class Simulation {
 	double end_time;
 	double accum_duration;
 	double eval_time;
+	int this_state;
+	std::vector<double> mod_htime;
+	std::vector<double> mod_hduration;
+	std::vector<int> mod_hstate;
+	std::vector<double> long_htime;
+	std::vector<double> long_hduration;
+	std::vector<int> long_hstate;	
 	//Rcpp::DataFrame df;
 	
 	public:	
 // Constructor	
-	Simulation(SEXP states_in, SEXP tt_int, SEXP tt_float, SEXP control_in);	
+	Simulation(SEXP states_in, SEXP tt_int, SEXP tt_float, SEXP control_in);
+// return objects	
 	Rcpp::DataFrame df;	
+<<<<<<< HEAD
 	Rcpp::DataFrame outDF;
 	
+=======
+// declare the outmat object
+	arma::Mat<double>  outmat;
+	Rcpp::List histories;		
+>>>>>>> 10c6dc487ee5bfcaab647876070aadb5fe2b6b69
 
 };
 #endif	
