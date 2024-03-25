@@ -11,10 +11,7 @@ Simulation::Simulation(SEXP states_in, SEXP tt_int, SEXP tt_float, SEXP control_
 	rates = (tt_float);		
 	tt_rows=rates.size();		
 	ints_in = tt_int;		
-//	from = (ints_in.begin(), std::next(ints_in.begin(), tt_rows));
-// 	https://stackoverflow.com/questions/47246200/how-to-slice-rcpp-numericvector-for-elements-2-to-101	
 	from = ints_in[Rcpp::Range(0,(tt_rows-1))];
-//	to = (ints_in.begin()+tt_rows, std::next(ints_in.begin()+tt_rows, tt_rows));
 	to = ints_in[Rcpp::Range(tt_rows,(2*tt_rows-1))];
 	L = (control_in);		
 // unpack the control_list			
@@ -39,16 +36,11 @@ while(sim < cycles) {
 		hduration.clear();
 		hstate.clear();
 		actual_state = istates.at(state_index)+1;
-//Rcout<<" actual initial state: "<< actual_state << "\n";
 		time = 0.0;
 		hstate.push_back(actual_state);
 		htime.push_back(time);
-//Rcout<<" htime: "<< Rcpp::wrap(htime)<< "\n";
-//Rcout<<" hstate:  "<< Rcpp::wrap(hstate)<< "\n";
 		
 		while(time < mission) {
-//Rcout<<" from: "<< from<< "\n";
-//Rcout<<" hstate.back(): "<< hstate.back()<< "\n";			
 			trows = which(from, hstate.back());
 			if(trows.size() > 0) {
 				dur_vec.clear();
@@ -58,7 +50,6 @@ while(sim < cycles) {
 					}
 				}
 				min_index = std::distance(std::begin(dur_vec), std::min_element(std::begin(dur_vec), std::end(dur_vec)));
-//Rcout<<" min dur: "<< dur_vec[std::distance(std::begin(dur_vec), std::min_element(std::begin(dur_vec), std::end(dur_vec)))]<< "\n";	
 				if(dur_vec.size() > 1) {
 					duration = dur_vec[min_index];
 					hduration.push_back(duration);
@@ -66,13 +57,9 @@ while(sim < cycles) {
 					duration = dur_vec[0];
 					hduration.push_back(dur_vec[0]);
 				}
-//Rcout<<" hduration:  "<< Rcpp::wrap(hduration)<< "\n";
-Rcout<<" next_actual_state: "<< to[trows[min_index]] << "\n";	
 				next_actual_state = to[trows[min_index]];
 			// ready to update the hvectors
 				time = htime[(int) htime.size()-1] + duration;
-Rcout<<"  (next) time: "<<time<< "\n";
-Rcout<<" duration: "<< duration<< "\n";			
 				if(time>mission) {	
 			// this event ran beyond the end of the  mission, so just need to fill last duration		
 				time = mission;
@@ -82,8 +69,6 @@ Rcout<<" duration: "<< duration<< "\n";
 			// record nextstate and (start) time of next event (we don't know duration yet)		
 				hstate.push_back(next_actual_state);	
 				htime.push_back(time);
-//Rcout<<" time: "<< time<< "\n";				
-//Rcout<<" htime.back() "<< htime.back()<< "\n";				
 				}	
 			}else{		
 			// there was no other state to go to, so just need to fill last duration		
@@ -142,10 +127,6 @@ if(mod_htime.size() == 0) break;
 					mod_hstate.erase(mod_hstate.begin());						
 					mod_hduration.erase(mod_hduration.begin());	
 				}
-
-	//To pop the first element of an std::vector (lets call it myvector), you just have to write:
-	//myvector.erase(myvector.begin()); // pop front	
-	
 			}
 		interval++;
 		}
@@ -154,15 +135,5 @@ if(mod_htime.size() == 0) break;
 
 sim++;
 }
-
- 
- df = Rcpp::DataFrame::create(
-		Rcpp::Named("State") = long_hstate,
-		Rcpp::Named("Duration") = long_hduration,
-		Rcpp::Named("Time") = long_htime
-		);
-	
-// unused variables
-Rcout<<"accum_duration: "<< accum_duration<< "\n";
 
 }

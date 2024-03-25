@@ -13,7 +13,7 @@ simcontrol<-list(mission=10000,	intervals=20, cycles=nsim)
 
 		
 	 ## this is the old call to the unregistered C++ code in the csim library	
-	out<-.Call("ChainSim2", states, tt_int, tt_float, simcontrol, PACKAGE="csim")	
+	out<-.Call("ChainSim", states, tt_int, tt_float, simcontrol, PACKAGE="csim")	
 
 out
 }
