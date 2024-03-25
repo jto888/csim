@@ -101,31 +101,30 @@ mod_hduration.clear();
 			eval_time = start_time;
 			while(eval_time < end_time) {
 // trap an occasional error that occurs when mod_history is empty but for some reason eval_time is not exactly equal to end_time
-if(mod_htime.size() == 0) break;
-//if(htime.size() == 0) break;
-
-				// working with the current [0] elements of mod_hxxx vectors, which will be erased as we proceed							
-				if((mod_hduration[0]+accum_duration) > stepsize) {							
+//if(mod_htime.size() == 0) break;
+if(htime.size() == 0) break;
+				// working with the current [0] elements of  hxxx vectors, which will be erased as we proceed							
+				if(( hduration[0]+accum_duration) > stepsize) {							
 				// prepare to update the outmat at (interval, this_state) with duration, which is stepsize-accum_duration							
-					this_state = mod_hstate[0];						
+					this_state =  hstate[0];						
 					outmat(interval, (this_state-1)) = outmat(interval, (this_state-1)) + (stepsize-accum_duration); 						
-				// modify mod_hduration[0] to reflect remaining duration to carry over to next interval							
-					mod_hduration[0] = mod_hduration[0] - (stepsize - accum_duration);						
-					mod_htime[0] = end_time;						
+				// modify  hduration[0] to reflect remaining duration to carry over to next interval							
+					 hduration[0] =  hduration[0] - (stepsize - accum_duration);						
+					 htime[0] = end_time;						
 				// adjust start_time for next interval, this will terminate the while loop for this interval							
 					eval_time = end_time; 						
 					start_time = end_time;						
 				}else{							
 				// add this duration to outmat for this state							
-					this_state = mod_hstate[0];						
-					outmat(interval, (this_state-1)) = outmat(interval, (this_state-1)) + mod_hduration[0];					
+					this_state =  hstate[0];						
+					outmat(interval, (this_state-1)) = outmat(interval, (this_state-1)) +  hduration[0];					
 				// update accum_duration							
-					accum_duration = accum_duration+mod_hduration[0];						
-				// erase front elements (.begin) from all mod_hxxx vectors
-					eval_time = mod_htime[0] + accum_duration;
-					mod_htime.erase(mod_htime.begin());						
-					mod_hstate.erase(mod_hstate.begin());						
-					mod_hduration.erase(mod_hduration.begin());	
+					accum_duration = accum_duration+ hduration[0];						
+				// erase front elements (.begin) from all  hxxx vectors
+					eval_time =  htime[0] + accum_duration;
+					 htime.erase( htime.begin());						
+					 hstate.erase( hstate.begin());						
+					 hduration.erase(hduration.begin());	
 				}
 			}
 		interval++;
