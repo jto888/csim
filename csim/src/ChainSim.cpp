@@ -19,7 +19,6 @@
 	std::unique_ptr<Simulation> SIM(new Simulation(states_in, tt_int, tt_float, control_in) );
 
 
-//outlist.push_back(SIM->df);
 outlist.push_back(Rcpp::wrap(SIM->outmat));
 
 	 return(outlist);

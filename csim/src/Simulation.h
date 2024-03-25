@@ -44,22 +44,14 @@ class Simulation {
 	double accum_duration;
 	double eval_time;
 	int this_state;
-	std::vector<double> mod_htime;
-	std::vector<double> mod_hduration;
-	std::vector<int> mod_hstate;
-	std::vector<double> long_htime;
-	std::vector<double> long_hduration;
-	std::vector<int> long_hstate;	
-	//Rcpp::DataFrame df;
 	
 	public:	
 // Constructor	
 	Simulation(SEXP states_in, SEXP tt_int, SEXP tt_float, SEXP control_in);
-// return objects	
-	Rcpp::DataFrame df;	
+// return object	
 // declare the outmat object
 	arma::Mat<double>  outmat;
-	Rcpp::List histories;		
+		
 
 };
 #endif	
