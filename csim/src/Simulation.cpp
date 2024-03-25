@@ -78,6 +78,7 @@ while(sim < cycles) {
 			}
 		
 		} // end of single history loop
+/*
 // preserve this history and work with mod_hvectors for interval sums
 mod_htime.clear();
 mod_hstate.clear();
@@ -90,7 +91,7 @@ mod_hduration.clear();
 			mod_hduration.push_back(hduration[x]);
 			long_hduration.push_back(hduration[x]);
 		}
-		
+*/		
 	// now prepare to enter the interval sums loop
 		start_time = 0.0;
 		interval = 0;
